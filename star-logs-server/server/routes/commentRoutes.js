@@ -21,8 +21,19 @@ router.post('/:logid', (req, res, next) => {
     .then(comment => res.send(comment))
     .catch(next)
 })
-//delete a log
+//delete a comment
 
+router.delete('/:id', (req, res, next) => {
+  Comments.findById(req.params.id)
+    .then(comment => {
+      if (comment.author != req.session.uid) {
+        res.status(401).send('Cannot delete comments that are not yours')
+      }
+      comment.remove(() => {
+        res.status(200).send('vaporized')
+      })
+    })
+})
 
 
 
